@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie This or That</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .setup-screen, .game-screen, .results-screen {
+            display: none;
+        }
+
+        .setup-screen.active, .game-screen.active, .results-screen.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .provider-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .provider-option:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .provider-option input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .provider-option.selected {
+            border-color: #667eea;
+            background-color: #f0f2ff;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .vs-container {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 30px;
+        }
+
+        .movie-card {
+            flex: 1;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 250px;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .tagline {
+            font-size: 1.5em;
+            font-style: italic;
+            color: #333;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 50px;
+        }
+
+        .results-screen h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .winner-card h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .winner-tagline {
+            font-size: 1.3em;
+            font-style: italic;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .winner-details {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .error {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        .all-choices {
+            margin-top: 30px;
+        }
+
+        .all-choices h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .choice-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .choice-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .choice-item strong {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .vs-container {
+                flex-direction: column;
+            }
+
+            .vs-divider {
+                transform: rotate(90deg);
+                min-width: auto;
+                min-height: 50px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Movie This or That</h1>
+
+        <!-- Setup Screen -->
+        <div class="setup-screen active" id="setupScreen">
+            <div class="form-group">
+                <label for="genre">Choose a Genre:</label>
+                <select id="genre">
+                    <option value="">Select a genre...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Choose Streaming Platforms:</label>
+                <div class="providers-grid" id="providersGrid">
+                    <!-- Providers will be loaded here -->
+                </div>
+            </div>
+
+            <div id="errorMessage"></div>
+
+            <button onclick="startGame()">Start Game</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-header">
+                <div class="progress" id="progress">Round 1 of 19</div>
+            </div>
+
+            <div class="vs-container">
+                <div class="movie-card" id="card1" onclick="chooseMovie(0)">
+                    <div class="tagline" id="tagline1"></div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="movie-card" id="card2" onclick="chooseMovie(1)">
+                    <div class="tagline" id="tagline2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <h2>🏆 Your Winner!</h2>
+            <div class="winner-card">
+                <h3 id="winnerTitle"></h3>
+                <div class="winner-tagline" id="winnerTagline"></div>
+                <div class="winner-details">
+                    <div>⭐ <span id="winnerRating"></span></div>
+                    <div>📅 <span id="winnerYear"></span></div>
+                </div>
+            </div>
+
+            <div class="all-choices">
+                <h3>Your Journey:</h3>
+                <div class="choice-list" id="choicesList"></div>
+            </div>
+
+            <button onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000/api';
+        
+        let movies = [];
+        let currentIndex = 0;
+        let currentMovies = [null, null];
+        let choices = [];
+
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                // Load genres
+                const genresResponse = await fetch(`${API_URL}/genres`);
+                const genresData = await genresResponse.json();
+                const genreSelect = document.getElementById('genre');
+                genresData.genres.forEach(genre => {
+                    const option = document.createElement('option');
+                    option.value = genre;
+                    option.textContent = genre.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    genreSelect.appendChild(option);
+                });
+
+                // Load providers
+                const providersResponse = await fetch(`${API_URL}/providers`);
+                const providersData = await providersResponse.json();
+                const providersGrid = document.getElementById('providersGrid');
+                providersData.providers.forEach(provider => {
+                    const label = document.createElement('label');
+                    label.className = 'provider-option';
+                    label.innerHTML = `
+                        <input type="checkbox" name="provider" value="${provider}">
+                        <span>${provider.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                    `;
+                    label.addEventListener('click', function(e) {
+                        if (e.target.tagName !== 'INPUT') {
+                            const checkbox = this.querySelector('input');
+                            checkbox.checked = !checkbox.checked;
+                        }
+                        this.classList.toggle('selected', this.querySelector('input').checked);
+                    });
+                    providersGrid.appendChild(label);
+                });
+            } catch (error) {
+                showError('Failed to load initial data. Please refresh the page.');
+            }
+        }
+
+        async function startGame() {
+            const genre = document.getElementById('genre').value;
+            const providerCheckboxes = document.querySelectorAll('input[name="provider"]:checked');
+            const providers = Array.from(providerCheckboxes).map(cb => cb.value);
+
+            // Validation
+            if (!genre) {
+                showError('Please select a genre.');
+                return;
+            }
+
+            if (providers.length === 0) {
+                showError('Please select at least one streaming platform.');
+                return;
+            }
+
+            // Show loading
+            showError('<div class="loading">Loading movies... This may take a moment.</div>');
+
+            try {
+                const response = await fetch(`${API_URL}/start-game`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ genre, providers })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || 'Failed to start game.');
+                    return;
+                }
+
+                movies = data.movies;
+                currentIndex = 0;
+                choices = [];
+                
+                // Initialize first comparison
+                currentMovies = [movies[0], movies[1]];
+                
+                showScreen('gameScreen');
+                updateGame();
+
+            } catch (error) {
+                showError('Failed to connect to the server. Make sure the backend is running.');
+            }
+        }
+
+        function updateGame() {
+            document.getElementById('progress').textContent = `Round ${currentIndex + 1} of 19`;
+            document.getElementById('tagline1').textContent = `"${currentMovies[0].tagline}"`;
+            document.getElementById('tagline2').textContent = `"${currentMovies[1].tagline}"`;
+        }
+
+        function chooseMovie(index) {
+            const chosen = currentMovies[index];
+            const notChosen = currentMovies[1 - index];
+            
+            choices.push({
+                chosen: chosen,
+                rejected: notChosen
+            });
+
+            currentIndex++;
+
+            if (currentIndex >= 19) {
+                // Game over - show results
+                showResults(chosen);
+            } else {
+                // Continue game - chosen movie vs next movie
+                currentMovies = [chosen, movies[currentIndex + 1]];
+                updateGame();
+            }
+        }
+
+        function showResults(winner) {
+            document.getElementById('winnerTitle').textContent = winner.title;
+            document.getElementById('winnerTagline').textContent = `"${winner.tagline}"`;
+            document.getElementById('winnerRating').textContent = winner.vote_average.toFixed(1);
+            document.getElementById('winnerYear').textContent = winner.release_date ? winner.release_date.split('-')[0] : 'N/A';
+
+            // Show all choices
+            const choicesList = document.getElementById('choicesList');
+            choicesList.innerHTML = '';
+            choices.forEach((choice, index) => {
+                const item = document.createElement('div');
+                item.className = 'choice-item';
+                item.innerHTML = `
+                    <strong>Round ${index + 1}:</strong> Chose "${choice.chosen.title}" over "${choice.rejected.title}"
+                `;
+                choicesList.appendChild(item);
+            });
+
+            showScreen('resultsScreen');
+        }
+
+        function resetGame() {
+            showScreen('setupScreen');
+            document.getElementById('errorMessage').innerHTML = '';
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.setup-screen, .game-screen, .results-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = message.includes('loading') ? message : `<div class="error">${message}</div>`;
+        }
+
+        // Load data when page loads
+        loadInitialData();
+    </script>
+</body>
+</html>
