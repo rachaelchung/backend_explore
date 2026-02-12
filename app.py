@@ -115,6 +115,9 @@ def fetch_movies_with_taglines(genre_id, provider_ids, count=50):
     
     return movies_with_taglines
 
+@app.route('/')
+def home():
+    return "Welcome to the Movie Tagline Game API!"
 
 @app.route('/api/genres', methods=['GET'])
 def get_genres():
