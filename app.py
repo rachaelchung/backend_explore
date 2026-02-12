@@ -8,8 +8,11 @@ app = Flask(__name__)
 CORS(app)
 
 # Read API key from secrets.txt
-with open('secrets.txt', 'r') as f:
-    TMDB_API_KEY = f.read().strip()
+try:
+    with open('secrets.txt', 'r') as f:
+        TMDB_API_KEY = f.read().strip()
+except FileNotFoundError:
+    TMDB_API_KEY = os.environ.get('TMDB_API_KEY')
 
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
