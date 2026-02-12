@@ -119,7 +119,7 @@ def fetch_movies_with_taglines(genre_id, provider_ids, count=50):
 def home():
     return "Welcome to the Movie Tagline Game API!"
 
-@app.route('/api/genres', methods=['GET'])
+@app.route('/genres', methods=['GET'])
 def get_genres():
     """Return available genres"""
     return jsonify({
@@ -127,7 +127,7 @@ def get_genres():
     })
 
 
-@app.route('/api/providers', methods=['GET'])
+@app.route('/providers', methods=['GET'])
 def get_providers():
     """Return available streaming providers"""
     return jsonify({
@@ -135,7 +135,7 @@ def get_providers():
     })
 
 
-@app.route('/api/start-game', methods=['POST'])
+@app.route('/start-game', methods=['POST'])
 def start_game():
     """Initialize a new game with selected genre and providers"""
     data = request.json
@@ -174,7 +174,7 @@ def start_game():
     })
 
 
-@app.route('/api/health', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint"""
     return jsonify({'status': 'ok'})
