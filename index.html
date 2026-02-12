@@ -462,7 +462,7 @@
         async function loadInitialData() {
             try {
                 // Load genres
-                const genresResponse = await fetch(`${API_URL}/genres`);
+                const genresResponse = await fetch(`${API_URL}/api/genres`);
                 const genresData = await genresResponse.json();
                 const genreSelect = document.getElementById('genre');
                 genresData.genres.forEach(genre => {
@@ -473,7 +473,7 @@
                 });
 
                 // Load providers
-                const providersResponse = await fetch(`${API_URL}/providers`);
+                const providersResponse = await fetch(`${API_URL}/api/providers`);
                 const providersData = await providersResponse.json();
                 const providersGrid = document.getElementById('providersGrid');
                 providersData.providers.forEach(provider => {
@@ -517,7 +517,7 @@
             showError('<div class="loading">Loading movies... This may take a moment.</div>');
 
             try {
-                const response = await fetch(`${API_URL}/start-game`, {
+                const response = await fetch(`${API_URL}/api/start-game`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
