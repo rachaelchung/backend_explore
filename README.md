@@ -25,3 +25,4 @@ const API_URL = 'http://127.0.0.1:5000/api';
 
 The page is available on GitHub Pages at: https://rachaelchung.github.io/backend_explore/
 
+*please keep in mind, due to the nature of render, it may take up to a minute for the server to boot up after launching on GitHub Pages*
