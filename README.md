@@ -16,5 +16,12 @@ Most likely looks like:
 const API_URL = 'http://127.0.0.1:5000/api';
 ```
 
-5. You should then be able to run the frontend index.html on a Live Server.
+5. You should then be able to run the frontend index.html on a Live Server (using the Live Server extensionin VSCode).
+    5a. Alternatively, run this in your terminal
+    ```
+    python -m http.server 8000
+    ```
+    And access the page at http://localhost:8000/index.html
+
+The page is available on GitHub Pages at: https://rachaelchung.github.io/backend_explore/
 
