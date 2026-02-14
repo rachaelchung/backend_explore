@@ -450,6 +450,7 @@
         </div>
     </div>
 
+
     <script>
         const API_URL = 'https://backend-explore-1.onrender.com/api';
         // to run locally: 'http://127.0.0.1:5000/api'
@@ -611,11 +612,17 @@
 
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
-            errorDiv.innerHTML = message.includes('loading') ? message : `<div class="error">${message}</div>`;
+            errorDiv.innerHTML = message.includes('loading') ? message : `
+<div class="error">${message}</div>`;
         }
 
         // Load data when page loads
         loadInitialData();
     </script>
 </body>
+
+<footer style="position:fixed; left:0; bottom:0; width:100%; text-align:center; padding:1em 0; font-size:0.9em; color:#888; background:transparent; z-index:100;">
+  Built with assistance from Claude Sonnet 4.5
+</footer>
+
 </html>
